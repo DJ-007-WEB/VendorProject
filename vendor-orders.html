@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshConnect - My Orders</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Very light blue-gray background */
+            color: #333; /* Dark text for light background */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0; /* Light gray */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #60a5fa; /* Blue-400 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6; /* Blue-500 */
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #3b82f6, #2563eb); /* Blue gradient */
+            color: white;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); /* Blue shadow */
+        }
+        .btn-secondary {
+            background-color: #e2e8f0; /* Light gray */
+            color: #333;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1; /* Medium gray */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(203, 213, 225, 0.4);
+        }
+        .order-table th, .order-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .order-table th {
+            background-color: #f0f4f8;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        .order-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* Full rounded */
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-pending { background-color: #fbd38d; color: #975a16; } /* Yellow */
+        .status-completed { background-color: #9ae6b4; color: #276749; } /* Green */
+        .status-cancelled { background-color: #feb2b2; color: #9b2c2c; } /* Red */
+        .status-processing { background-color: #a7f3d0; color: #065f46; } /* Teal */
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm py-4 px-6 md:px-10 sticky top-0 z-50">
+        <nav class="container mx-auto flex justify-between items-center flex-wrap gap-4">
+            <!-- Logo and Tagline -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="https://placehold.co/40x40/3b82f6/ffffff?text=FC" alt="FreshConnect Logo" class="w-10 h-10 rounded-full">
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-gray-800">FreshConnect</span>
+                    <span class="text-xs text-gray-500 hidden sm:block">Trusted Raw Materials for Street Food Vendors</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-4">
+                <button onclick="window.location.href='dashboard.html'" class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 font-medium">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                </button>
+                <button id="logoutBtn" class="px-4 py-2 rounded-lg btn-secondary font-medium">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Section - My Orders -->
+    <main class="py-16 px-6 md:px-10 bg-gray-50 min-h-screen">
+        <div class="container mx-auto max-w-6xl">
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-8 text-gray-800 text-center">
+                My <span class="text-blue-600">Orders</span>
+            </h1>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Recent Orders</h2>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full order-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <!-- Order rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <p id="noOrdersMessage" class="text-center text-gray-600 mt-8 hidden">No orders found.</p>
+
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 rounded-full font-semibold btn-primary">
+                        Load More Orders
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="window.location.href='dashboard.html'" class="mt-12 px-6 py-3 rounded-full font-semibold btn-secondary">
+                Back to Dashboard
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-10 px-6 md:px-10">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+            &copy; 2025 FreshConnect. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Retrieve user data from session storage
+        const userData = JSON.parse(sessionStorage.getItem('freshConnectUser'));
+        const ordersTableBody = document.getElementById('ordersTableBody');
+        const noOrdersMessage = document.getElementById('noOrdersMessage');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Simulated order data
+        const simulatedOrders = [
+            {
+                id: 'FC-ORD-001',
+                date: '2025-07-25',
+                items: [
+                    { name: 'Fresh Tomatoes', qty: '10 kg' },
+                    { name: 'Onions', qty: '5 kg' }
+                ],
+                total: '₹480',
+                status: 'Completed',
+                supplier: 'Fresh Valley Produce'
+            },
+            {
+                id: 'FC-ORD-002',
+                date: '2025-07-26',
+                items: [
+                    { name: 'Basmati Rice', qty: '25 kg' },
+                    { name: 'Turmeric Powder', qty: '2 kg' }
+                ],
+                total: '₹2125',
+                status: 'Processing',
+                supplier: 'Golden Grains Co.'
+            },
+            {
+                id: 'FC-ORD-003',
+                date: '2025-07-27',
+                items: [
+                    { name: 'Fresh Milk', qty: '10 L' }
+                ],
+                total: '₹550',
+                status: 'Pending',
+                supplier: 'Pure Dairy Farm'
+            },
+            {
+                id: 'FC-ORD-004',
+                date: '2025-07-24',
+                items: [
+                    { name: 'Cooking Oil', qty: '5 L' }
+                ],
+                total: '₹600',
+                status: 'Cancelled',
+                supplier: 'Premium Oils Ltd.'
+            }
+        ];
+
+        // Function to populate the orders table
+        function populateOrdersTable() {
+            ordersTableBody.innerHTML = ''; // Clear existing rows
+            if (simulatedOrders.length === 0) {
+                noOrdersMessage.classList.remove('hidden');
+                return;
+            }
+
+            noOrdersMessage.classList.add('hidden'); // Hide if there are orders
+
+            simulatedOrders.forEach(order => {
+                const row = ordersTableBody.insertRow();
+                row.insertCell().textContent = order.id;
+                row.insertCell().textContent = order.date;
+
+                const itemsCell = row.insertCell();
+                itemsCell.innerHTML = order.items.map(item => `${item.name} (${item.qty})`).join('<br>');
+
+                row.insertCell().textContent = `₹${order.total}`;
+
+                const statusCell = row.insertCell();
+                let statusClass = '';
+                switch (order.status) {
+                    case 'Pending': statusClass = 'status-pending'; break;
+                    case 'Processing': statusClass = 'status-processing'; break;
+                    case 'Completed': statusClass = 'status-completed'; break;
+                    case 'Cancelled': statusClass = 'status-cancelled'; break;
+                }
+                statusCell.innerHTML = `<span class="status-badge ${statusClass}">${order.status}</span>`;
+
+                const actionCell = row.insertCell();
+                const viewDetailsBtn = document.createElement('button');
+                viewDetailsBtn.textContent = 'View Details';
+                viewDetailsBtn.className = 'px-3 py-1 rounded-lg btn-secondary text-sm';
+                viewDetailsBtn.onclick = () => alert(`Viewing details for Order ID: ${order.id}\nSupplier: ${order.supplier}\nItems: ${order.items.map(item => item.name).join(', ')}`);
+                actionCell.appendChild(viewDetailsBtn);
+            });
+        }
+
+        // Basic logout function
+        function logout() {
+            sessionStorage.removeItem('freshConnectUser'); // Clear session
+            window.location.href = 'index.html'; // Redirect to main page
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in and is a vendor
+            if (!userData || !userData.isLoggedIn || userData.role !== 'vendor') {
+                alert('Access Denied. Please log in as a vendor to view your orders.');
+                window.location.href = 'index.html'; // Redirect if not authorized
+                return;
+            }
+
+            populateOrdersTable(); // Populate the table on page load
+
+            logoutBtn.addEventListener('click', logout);
+        });
+    </script>
+</body>
+</html>

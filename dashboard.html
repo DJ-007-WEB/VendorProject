@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshConnect - Your Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Very light blue-gray background */
+            color: #333; /* Dark text for light background */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0; /* Light gray */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #60a5fa; /* Blue-400 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6; /* Blue-500 */
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #3b82f6, #2563eb); /* Blue gradient */
+            color: white;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); /* Blue shadow */
+        }
+        .btn-secondary {
+            background-color: #e2e8f0; /* Light gray */
+            color: #333;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1; /* Medium gray */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(203, 213, 225, 0.4);
+        }
+        .hidden-section {
+            display: none;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm py-4 px-6 md:px-10 sticky top-0 z-50">
+        <nav class="container mx-auto flex justify-between items-center flex-wrap gap-4">
+            <!-- Logo and Tagline -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="https://placehold.co/40x40/3b82f6/ffffff?text=FC" alt="FreshConnect Logo" class="w-10 h-10 rounded-full">
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-gray-800">FreshConnect</span>
+                    <span class="text-xs text-gray-500 hidden sm:block">Trusted Raw Materials for Street Food Vendors</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links (Dashboard specific) -->
+            <div class="flex items-center space-x-4">
+                <button id="dashboardHomeBtn" class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 font-medium">
+                    <i class="fas fa-home mr-2"></i> Home
+                </button>
+                <button id="logoutBtn" class="px-4 py-2 rounded-lg btn-secondary font-medium">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Dashboard Content Section -->
+    <main class="py-16 px-6 md:px-10 bg-gray-50 min-h-screen">
+        <div class="container mx-auto max-w-5xl text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4 text-gray-800">
+                Welcome to Your <span class="text-blue-600">Dashboard</span>!
+            </h1>
+            <p id="dashboardWelcomeMessage" class="text-lg md:text-xl mb-8 text-gray-700">
+                Loading your personalized content...
+            </p>
+
+            <!-- Vendor Dashboard Section -->
+            <div id="vendorDashboard" class="hidden-section bg-white p-8 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Vendor Overview</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-blue-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">My Orders</h3>
+                        <p class="text-gray-600">Track your current and past raw material orders.</p>
+                        <a href="vendor-orders.html" class="inline-block mt-4 px-4 py-2 rounded-lg btn-primary text-sm">View Orders</a>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Browse Suppliers</h3>
+                        <p class="text-gray-600">Discover new trusted suppliers and fresh deals.</p>
+                        <a href="suppliers.html" class="inline-block mt-4 px-4 py-2 rounded-lg btn-primary text-sm">Shop Now</a>
+                    </div>
+                    <div class="bg-yellow-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">My Profile</h3>
+                        <p class="text-gray-600">Update your business and contact information.</p>
+                        <a href="vendor-profile.html" class="inline-block mt-4 px-4 py-2 rounded-lg btn-primary text-sm">Edit Profile</a>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Daily Prices</h3>
+                        <p class="text-gray-600">Check today's raw material prices and trends.</p>
+                        <a href="prices.html" class="inline-block mt-4 px-4 py-2 rounded-lg btn-primary text-sm">View Prices</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supplier Dashboard Section -->
+            <div id="supplierDashboard" class="hidden-section bg-white p-8 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Supplier Management</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-blue-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Manage Products</h3>
+                        <p class="text-gray-600">Add, edit, or remove your listed raw materials.</p>
+                        <a href="manage-products.html" class="inline-block mt-4 px-4 py-2 rounded-lg btn-primary text-sm">Manage Listings</a>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">View Orders</h3>
+                        <p class="text-gray-600">Process incoming orders from vendors.</p>
+                        <a href="supplier-orders.html" class="inline-block mt-4 px-4 py-2 rounded-lg btn-primary text-sm">Process Orders</a>
+                    </div>
+                    <div class="bg-yellow-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">My Profile</h3>
+                        <p class="text-gray-600">Update your business and contact information.</p>
+                        <button class="mt-4 px-4 py-2 rounded-lg btn-primary text-sm">Edit Profile</button>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Daily Prices</h3>
+                        <p class="text-gray-600">Share today's raw material prices and updates.</p>
+                        <a href="prices.html" class="inline-block mt-4 px-4 py-2 rounded-lg btn-primary text-sm">Update Prices</a>
+                    </div>
+                    <div class="bg-red-50 p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Vendor Network</h3>
+                        <p class="text-gray-600">See connected vendors and their needs.</p>
+                        <a href="suppliers.html" class="inline-block mt-4 px-4 py-2 rounded-lg btn-primary text-sm">View Vendors</a>
+                    </div>
+                </div>
+            </div>
+
+            <button id="backToHomeBtn" class="mt-12 px-6 py-3 rounded-full font-semibold btn-secondary">
+                Back to Main Site
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer Section (Optional, can be shared or simplified) -->
+    <footer class="bg-gray-800 text-white py-10 px-6 md:px-10">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+            &copy; 2025 FreshConnect. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Retrieve user data from session storage
+        const userData = JSON.parse(sessionStorage.getItem('freshConnectUser'));
+        const dashboardWelcomeMessage = document.getElementById('dashboardWelcomeMessage');
+        const vendorDashboard = document.getElementById('vendorDashboard');
+        const supplierDashboard = document.getElementById('supplierDashboard');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const dashboardHomeBtn = document.getElementById('dashboardHomeBtn');
+        const backToHomeBtn = document.getElementById('backToHomeBtn');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (userData && userData.isLoggedIn) {
+                dashboardWelcomeMessage.textContent = `Welcome, ${userData.businessName || userData.email}! You are logged in as a ${userData.role}.`;
+
+                if (userData.role === 'vendor') {
+                    vendorDashboard.classList.remove('hidden-section');
+                } else if (userData.role === 'supplier') {
+                    supplierDashboard.classList.remove('hidden-section');
+                } else {
+                    dashboardWelcomeMessage.textContent = `Welcome! Your role (${userData.role}) dashboard is under construction.`;
+                }
+            } else {
+                // If not logged in, redirect to the main page
+                window.location.href = 'index.html';
+            }
+
+            logoutBtn.addEventListener('click', () => {
+                sessionStorage.removeItem('freshConnectUser'); // Clear session
+                window.location.href = 'index.html'; // Redirect to main page
+            });
+
+            dashboardHomeBtn.addEventListener('click', () => {
+                window.location.href = 'index.html'; // Redirect to main page
+            });
+
+            backToHomeBtn.addEventListener('click', () => {
+                window.location.href = 'index.html'; // Redirect to main page
+            });
+        });
+    </script>
+</body>
+</html>

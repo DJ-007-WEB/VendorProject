@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshConnect - Daily Raw Material Prices</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Very light blue-gray background */
+            color: #333; /* Dark text for light background */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0; /* Light gray */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #60a5fa; /* Blue-400 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6; /* Blue-500 */
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #3b82f6, #2563eb); /* Blue gradient */
+            color: white;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); /* Blue shadow */
+        }
+        .btn-secondary {
+            background-color: #e2e8f0; /* Light gray */
+            color: #333;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1; /* Medium gray */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(203, 213, 225, 0.4);
+        }
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .price-item:last-child {
+            border-bottom: none;
+        }
+        .price-change-up {
+            color: #22c55e; /* Green */
+        }
+        .price-change-down {
+            color: #ef4444; /* Red */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm py-4 px-6 md:px-10 sticky top-0 z-50">
+        <nav class="container mx-auto flex justify-between items-center flex-wrap gap-4">
+            <!-- Logo and Tagline -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="https://placehold.co/40x40/3b82f6/ffffff?text=FC" alt="FreshConnect Logo" class="w-10 h-10 rounded-full">
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-gray-800">FreshConnect</span>
+                    <span class="text-xs text-gray-500 hidden sm:block">Trusted Raw Materials for Street Food Vendors</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-4">
+                <button onclick="window.location.href='dashboard.html'" class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 font-medium">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                </button>
+                <button id="logoutBtn" class="px-4 py-2 rounded-lg btn-secondary font-medium">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Section - Daily Prices -->
+    <main class="py-16 px-6 md:px-10 bg-gray-50 min-h-screen">
+        <div class="container mx-auto max-w-4xl text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4 text-gray-800">
+                Daily Raw Material <span class="text-blue-600">Prices</span>
+            </h1>
+            <p class="text-lg md:text-xl mb-8 text-gray-700">
+                Here you can find the latest prices for various raw materials.
+            </p>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Market Data for <span id="currentDate"></span></h2>
+
+                <div class="overflow-x-auto">
+                    <div class="space-y-4">
+                        <div class="price-item">
+                            <span class="text-lg text-gray-700">Fresh Tomatoes (per kg)</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold text-green-600">₹28.00</span>
+                                <span class="text-sm price-change-up"><i class="fas fa-caret-up"></i> +0.50</span>
+                            </div>
+                        </div>
+                        <div class="price-item">
+                            <span class="text-lg text-gray-700">Potatoes (per kg)</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold text-green-600">₹22.00</span>
+                                <span class="text-sm price-change-down"><i class="fas fa-caret-down"></i> -1.00</span>
+                            </div>
+                        </div>
+                        <div class="price-item">
+                            <span class="text-lg text-gray-700">Onions (per kg)</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold text-green-600">₹35.00</span>
+                                <span class="text-sm price-change-up"><i class="fas fa-caret-up"></i> +2.00</span>
+                            </div>
+                        </div>
+                        <div class="price-item">
+                            <span class="text-lg text-gray-700">Milk (Cow, per liter)</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold text-green-600">₹60.00</span>
+                                <span class="text-sm text-gray-500">No Change</span>
+                            </div>
+                        </div>
+                        <div class="price-item">
+                            <span class="text-lg text-gray-700">Basmati Rice (per kg)</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold text-green-600">₹70.00</span>
+                                <span class="text-sm price-change-up"><i class="fas fa-caret-up"></i> +1.50</span>
+                            </div>
+                        </div>
+                        <div class="price-item">
+                            <span class="text-lg text-gray-700">Chicken (per kg)</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold text-green-600">₹180.00</span>
+                                <span class="text-sm price-change-down"><i class="fas fa-caret-down"></i> -5.00</span>
+                            </div>
+                        </div>
+                        <div class="price-item">
+                            <span class="text-lg text-gray-700">Sunflower Oil (per liter)</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold text-green-600">₹125.00</span>
+                                <span class="text-sm text-gray-500">No Change</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-center text-gray-600 mt-8">Prices are updated daily. Data is indicative and may vary by supplier.</p>
+
+                <div class="flex justify-center mt-8">
+                    <button class="px-6 py-3 rounded-full font-semibold btn-primary">
+                        View Historical Data
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="window.location.href='dashboard.html'" class="mt-12 px-6 py-3 rounded-full font-semibold btn-secondary">
+                Back to Dashboard
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-10 px-6 md:px-10">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+            &copy; 2025 FreshConnect. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Basic logout function for this page
+        function logout() {
+            sessionStorage.removeItem('freshConnectUser');
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Display current date
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-IN', options);
+
+            // Check if user is logged in (optional, but good practice for internal pages)
+            const userData = JSON.parse(sessionStorage.getItem('freshConnectUser'));
+            if (!userData || !userData.isLoggedIn) {
+                alert('Access Denied. Please log in to view prices.');
+                window.location.href = 'index.html'; // Redirect if not authorized
+                return;
+            }
+
+            // Logout button event listener
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+
+            // Placeholder for View Historical Data button
+            document.querySelector('.btn-primary').addEventListener('click', () => {
+                alert('Historical Price Data functionality coming soon!');
+            });
+        });
+    </script>
+</body>
+</html>

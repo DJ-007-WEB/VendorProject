@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshConnect - My Vendor Profile</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Very light blue-gray background */
+            color: #333; /* Dark text for light background */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0; /* Light gray */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #60a5fa; /* Blue-400 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6; /* Blue-500 */
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #3b82f6, #2563eb); /* Blue gradient */
+            color: white;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); /* Blue shadow */
+        }
+        .btn-secondary {
+            background-color: #e2e8f0; /* Light gray */
+            color: #333;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1; /* Medium gray */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(203, 213, 225, 0.4);
+        }
+        .input-group {
+            display: flex;
+            gap: 1rem;
+        }
+        .input-group > div {
+            flex: 1;
+        }
+        @media (max-width: 640px) {
+            .input-group {
+                flex-direction: column;
+            }
+        }
+        .profile-field-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .profile-field-group:last-child {
+            border-bottom: none;
+        }
+        .profile-label {
+            font-weight: 500;
+            color: #4a5568; /* Gray-700 */
+        }
+        .profile-value {
+            color: #2d3748; /* Gray-800 */
+        }
+        .profile-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.375rem;
+            background-color: #f8fafc;
+        }
+        .profile-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        .editable-field .profile-value {
+            display: none; /* Hide value when editing */
+        }
+        .editable-field .profile-input {
+            display: block; /* Show input when editing */
+        }
+        .profile-field-group:not(.editable-field) .profile-input {
+            display: none; /* Hide input when not editing */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm py-4 px-6 md:px-10 sticky top-0 z-50">
+        <nav class="container mx-auto flex justify-between items-center flex-wrap gap-4">
+            <!-- Logo and Tagline -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="https://placehold.co/40x40/3b82f6/ffffff?text=FC" alt="FreshConnect Logo" class="w-10 h-10 rounded-full">
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-gray-800">FreshConnect</span>
+                    <span class="text-xs text-gray-500 hidden sm:block">Trusted Raw Materials for Street Food Vendors</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-4">
+                <button onclick="window.location.href='dashboard.html'" class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 font-medium">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                </button>
+                <button id="logoutBtn" class="px-4 py-2 rounded-lg btn-secondary font-medium">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Section - Vendor Profile -->
+    <main class="py-16 px-6 md:px-10 bg-gray-50 min-h-screen">
+        <div class="container mx-auto max-w-3xl">
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-8 text-gray-800 text-center">
+                My <span class="text-blue-600">Profile</span>
+            </h1>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg mb-8">
+                <div class="flex flex-col items-center mb-6">
+                    <img id="profilePicture" src="https://placehold.co/120x120/cbd5e1/ffffff?text=Vendor" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-blue-200 mb-4">
+                    <button class="text-blue-600 hover:underline text-sm font-medium">Change Profile Picture</button>
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Personal Details</h2>
+                <div class="space-y-4 mb-8">
+                    <div class="profile-field-group">
+                        <span class="profile-label">Owner Name:</span>
+                        <span class="profile-value" id="ownerNameDisplay"></span>
+                        <input type="text" id="ownerNameInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Email:</span>
+                        <span class="profile-value" id="emailDisplay"></span>
+                        <input type="email" id="emailInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Phone Number:</span>
+                        <span class="profile-value" id="phoneNumberDisplay"></span>
+                        <input type="tel" id="phoneNumberInput" class="profile-input" disabled>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Business Details</h2>
+                <div class="space-y-4 mb-8">
+                    <div class="profile-field-group">
+                        <span class="profile-label">Business Name:</span>
+                        <span class="profile-value" id="businessNameDisplay"></span>
+                        <input type="text" id="businessNameInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Business Type:</span>
+                        <span class="profile-value" id="businessTypeDisplay"></span>
+                        <input type="text" id="businessTypeInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Business Location:</span>
+                        <span class="profile-value" id="businessLocationDisplay"></span>
+                        <input type="text" id="businessLocationInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Food Specialty:</span>
+                        <span class="profile-value" id="foodSpecialtyDisplay"></span>
+                        <input type="text" id="foodSpecialtyInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Avg. Daily Customers:</span>
+                        <span class="profile-value" id="avgDailyCustomersDisplay"></span>
+                        <input type="number" id="avgDailyCustomersInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Years in Business:</span>
+                        <span class="profile-value" id="yearsInBusinessDisplay">N/A</span>
+                        <input type="number" id="yearsInBusinessInput" class="profile-input" disabled>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Operational Preferences</h2>
+                <div class="space-y-4 mb-8">
+                    <div class="profile-field-group">
+                        <span class="profile-label">Preferred Delivery Time:</span>
+                        <span class="profile-value" id="deliveryTimeDisplay">Morning (6-8 AM)</span>
+                        <input type="text" id="deliveryTimeInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Min. Order Quantity Pref:</span>
+                        <span class="profile-value" id="minOrderPrefDisplay">Flexible</span>
+                        <input type="text" id="minOrderPrefInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Notifications:</span>
+                        <span class="profile-value" id="notificationsDisplay">Email, SMS (Price Alerts, Offers)</span>
+                        <input type="text" id="notificationsInput" class="profile-input" disabled>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">Compliance & Documentation</h2>
+                <div class="space-y-4 mb-8">
+                    <div class="profile-field-group">
+                        <span class="profile-label">FSSAI License:</span>
+                        <span class="profile-value" id="fssaiLicenseDisplay">Not Provided</span>
+                        <input type="text" id="fssaiLicenseInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Local Permits:</span>
+                        <span class="profile-value" id="localPermitsDisplay">Active</span>
+                        <input type="text" id="localPermitsInput" class="profile-input" disabled>
+                    </div>
+                    <div class="profile-field-group">
+                        <span class="profile-label">Hygiene Certifications:</span>
+                        <span class="profile-value" id="hygieneCertDisplay">None</span>
+                        <input type="text" id="hygieneCertInput" class="profile-input" disabled>
+                    </div>
+                </div>
+
+                <div class="flex justify-center space-x-4">
+                    <button id="editProfileBtn" class="px-6 py-3 rounded-lg btn-primary font-semibold">
+                        <i class="fas fa-edit mr-2"></i> Edit Profile
+                    </button>
+                    <button id="saveProfileBtn" class="px-6 py-3 rounded-lg btn-primary font-semibold hidden">
+                        <i class="fas fa-save mr-2"></i> Save Changes
+                    </button>
+                    <button id="cancelEditBtn" class="px-6 py-3 rounded-lg btn-secondary font-semibold hidden">
+                        <i class="fas fa-times mr-2"></i> Cancel
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
+                <button id="changePasswordBtn" class="px-6 py-3 rounded-full font-semibold btn-secondary">
+                    Change Password
+                </button>
+                <button id="deleteAccountBtn" class="px-6 py-3 rounded-full font-semibold bg-red-500 text-white hover:bg-red-600 transition-colors">
+                    Delete Account
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-10 px-6 md:px-10">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+            &copy; 2025 FreshConnect. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Retrieve user data from session storage
+        const userData = JSON.parse(sessionStorage.getItem('freshConnectUser'));
+
+        // UI elements
+        const ownerNameDisplay = document.getElementById('ownerNameDisplay');
+        const ownerNameInput = document.getElementById('ownerNameInput');
+        const emailDisplay = document.getElementById('emailDisplay');
+        const emailInput = document.getElementById('emailInput');
+        const phoneNumberDisplay = document.getElementById('phoneNumberDisplay');
+        const phoneNumberInput = document.getElementById('phoneNumberInput');
+        const businessNameDisplay = document.getElementById('businessNameDisplay');
+        const businessNameInput = document.getElementById('businessNameInput');
+        const businessTypeDisplay = document.getElementById('businessTypeDisplay');
+        const businessTypeInput = document.getElementById('businessTypeInput');
+        const businessLocationDisplay = document.getElementById('businessLocationDisplay');
+        const businessLocationInput = document.getElementById('businessLocationInput');
+        const foodSpecialtyDisplay = document.getElementById('foodSpecialtyDisplay');
+        const foodSpecialtyInput = document.getElementById('foodSpecialtyInput');
+        const avgDailyCustomersDisplay = document.getElementById('avgDailyCustomersDisplay');
+        const avgDailyCustomersInput = document.getElementById('avgDailyCustomersInput');
+        const yearsInBusinessDisplay = document.getElementById('yearsInBusinessDisplay');
+        const yearsInBusinessInput = document.getElementById('yearsInBusinessInput');
+        const deliveryTimeDisplay = document.getElementById('deliveryTimeDisplay');
+        const deliveryTimeInput = document.getElementById('deliveryTimeInput');
+        const minOrderPrefDisplay = document.getElementById('minOrderPrefDisplay');
+        const minOrderPrefInput = document.getElementById('minOrderPrefInput');
+        const notificationsDisplay = document.getElementById('notificationsDisplay');
+        const notificationsInput = document.getElementById('notificationsInput');
+        const fssaiLicenseDisplay = document.getElementById('fssaiLicenseDisplay');
+        const fssaiLicenseInput = document.getElementById('fssaiLicenseInput');
+        const localPermitsDisplay = document.getElementById('localPermitsDisplay');
+        const localPermitsInput = document.getElementById('localPermitsInput');
+        const hygieneCertDisplay = document.getElementById('hygieneCertDisplay');
+        const hygieneCertInput = document.getElementById('hygieneCertInput');
+
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const saveProfileBtn = document.getElementById('saveProfileBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+
+        let isEditing = false; // State to track if profile is in edit mode
+
+        // Function to populate profile fields
+        function populateProfile() {
+            if (userData && userData.role === 'vendor') {
+                ownerNameDisplay.textContent = userData.ownerName || 'N/A';
+                ownerNameInput.value = userData.ownerName || '';
+                emailDisplay.textContent = userData.email || 'N/A';
+                emailInput.value = userData.email || '';
+                phoneNumberDisplay.textContent = userData.phoneNumber || 'N/A';
+                phoneNumberInput.value = userData.phoneNumber || '';
+                businessNameDisplay.textContent = userData.businessName || 'N/A';
+                businessNameInput.value = userData.businessName || '';
+                businessTypeDisplay.textContent = userData.businessType || 'Vendor';
+                businessTypeInput.value = userData.businessType || 'Vendor'; // Not editable, but for consistency
+                businessLocationDisplay.textContent = userData.businessLocation || 'N/A';
+                businessLocationInput.value = userData.businessLocation || '';
+                foodSpecialtyDisplay.textContent = userData.foodSpecialty || 'N/A';
+                foodSpecialtyInput.value = userData.foodSpecialty || '';
+                avgDailyCustomersDisplay.textContent = userData.avgDailyCustomers || 'N/A';
+                avgDailyCustomersInput.value = userData.avgDailyCustomers || '';
+                yearsInBusinessDisplay.textContent = userData.yearsInBusiness || 'N/A';
+                yearsInBusinessInput.value = userData.yearsInBusiness || '';
+                deliveryTimeDisplay.textContent = userData.preferredDeliveryTime || 'Morning (6-8 AM)';
+                deliveryTimeInput.value = userData.preferredDeliveryTime || 'Morning (6-8 AM)';
+                minOrderPrefDisplay.textContent = userData.minOrderQuantityPref || 'Flexible';
+                minOrderPrefInput.value = userData.minOrderQuantityPref || 'Flexible';
+                notificationsDisplay.textContent = userData.notificationSettings || 'Email, SMS (Price Alerts, Offers)';
+                notificationsInput.value = userData.notificationSettings || 'Email, SMS (Price Alerts, Offers)';
+                fssaiLicenseDisplay.textContent = userData.fssaiLicense || 'Not Provided';
+                fssaiLicenseInput.value = userData.fssaiLicense || '';
+                localPermitsDisplay.textContent = userData.localPermits || 'Active';
+                localPermitsInput.value = userData.localPermits || '';
+                hygieneCertDisplay.textContent = userData.hygieneCertifications || 'None';
+                hygieneCertInput.value = userData.hygieneCertifications || '';
+
+            } else {
+                // If not logged in or not a vendor, redirect to index.html
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Function to toggle edit mode
+        function toggleEditMode(enable) {
+            isEditing = enable;
+            const fields = [
+                { display: ownerNameDisplay, input: ownerNameInput },
+                { display: emailDisplay, input: emailInput },
+                { display: phoneNumberDisplay, input: phoneNumberInput },
+                { display: businessNameDisplay, input: businessNameInput },
+                { display: businessLocationDisplay, input: businessLocationInput },
+                { display: foodSpecialtyDisplay, input: foodSpecialtyInput },
+                { display: avgDailyCustomersDisplay, input: avgDailyCustomersInput },
+                { display: yearsInBusinessDisplay, input: yearsInBusinessInput },
+                { display: deliveryTimeDisplay, input: deliveryTimeInput },
+                { display: minOrderPrefDisplay, input: minOrderPrefInput },
+                { display: notificationsDisplay, input: notificationsInput },
+                { display: fssaiLicenseDisplay, input: fssaiLicenseInput },
+                { display: localPermitsDisplay, input: localPermitsInput },
+                { display: hygieneCertDisplay, input: hygieneCertInput },
+            ];
+
+            fields.forEach(field => {
+                if (field.input) { // Ensure input element exists
+                    if (enable) {
+                        field.display.style.display = 'none';
+                        field.input.style.display = 'block';
+                        field.input.disabled = false;
+                    } else {
+                        field.display.style.display = 'block';
+                        field.input.style.display = 'none';
+                        field.input.disabled = true;
+                    }
+                }
+            });
+
+            if (enable) {
+                editProfileBtn.classList.add('hidden');
+                saveProfileBtn.classList.remove('hidden');
+                cancelEditBtn.classList.remove('hidden');
+            } else {
+                editProfileBtn.classList.remove('hidden');
+                saveProfileBtn.classList.add('hidden');
+                cancelEditBtn.classList.add('hidden');
+            }
+        }
+
+        // Function to save profile changes
+        function saveProfile() {
+            // In a real application, you would send this data to your backend (e.g., Firebase Firestore)
+            // For now, we'll just update the session storage and display
+            userData.ownerName = ownerNameInput.value;
+            userData.email = emailInput.value; // In a real app, email changes require re-verification
+            userData.phoneNumber = phoneNumberInput.value;
+            userData.businessName = businessNameInput.value;
+            userData.businessLocation = businessLocationInput.value;
+            userData.foodSpecialty = foodSpecialtyInput.value;
+            userData.avgDailyCustomers = avgDailyCustomersInput.value;
+            userData.yearsInBusiness = yearsInBusinessInput.value;
+            userData.preferredDeliveryTime = deliveryTimeInput.value;
+            userData.minOrderQuantityPref = minOrderPrefInput.value;
+            userData.notificationSettings = notificationsInput.value;
+            userData.fssaiLicense = fssaiLicenseInput.value;
+            userData.localPermits = localPermitsInput.value;
+            userData.hygieneCertifications = hygieneCertInput.value;
+
+
+            sessionStorage.setItem('freshConnectUser', JSON.stringify(userData));
+            populateProfile(); // Re-populate display fields
+            toggleEditMode(false); // Exit edit mode
+            alert('Profile updated successfully! (Changes saved to session storage)');
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            populateProfile(); // Load data when page loads
+
+            editProfileBtn.addEventListener('click', () => toggleEditMode(true));
+            saveProfileBtn.addEventListener('click', saveProfile);
+            cancelEditBtn.addEventListener('click', () => {
+                populateProfile(); // Revert changes by re-populating original data
+                toggleEditMode(false); // Exit edit mode
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                sessionStorage.removeItem('freshConnectUser'); // Clear session
+                window.location.href = 'index.html'; // Redirect to main page
+            });
+
+            changePasswordBtn.addEventListener('click', () => {
+                alert('Change Password functionality coming soon!');
+                // In a real app, this would open a modal or redirect to a password change page
+            });
+
+            deleteAccountBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                    alert('Account deletion functionality coming soon!');
+                    sessionStorage.removeItem('freshConnectUser'); // Simulate deletion
+                    window.location.href = 'index.html'; // Redirect to main page
+                }
+            });
+        });
+    </script>
+</body>
+</html>

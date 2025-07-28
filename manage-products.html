@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshConnect - Manage Products</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Very light blue-gray background */
+            color: #333; /* Dark text for light background */
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0; /* Light gray */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #60a5fa; /* Blue-400 */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6; /* Blue-500 */
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #3b82f6, #2563eb); /* Blue gradient */
+            color: white;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); /* Blue shadow */
+        }
+        .btn-secondary {
+            background-color: #e2e8f0; /* Light gray */
+            color: #333;
+            transition: all 0.3s ease;
+            transform: translateY(0);
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1; /* Medium gray */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(203, 213, 225, 0.4);
+        }
+        .product-table th, .product-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .product-table th {
+            background-color: #f0f4f8;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        .product-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* Full rounded */
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-active { background-color: #9ae6b4; color: #276749; } /* Green */
+        .status-inactive { background-color: #feb2b2; color: #9b2c2c; } /* Red */
+        .status-draft { background-color: #fbd38d; color: #975a16; } /* Yellow */
+
+        /* Modal specific styles (copied from index.html for consistency) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1.25rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(-30px);
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: #333;
+        }
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+        .input-group {
+            display: flex;
+            gap: 1rem;
+        }
+        .input-group > div {
+            flex: 1;
+        }
+        @media (max-width: 640px) {
+            .input-group {
+                flex-direction: column;
+            }
+        }
+        .hidden-section {
+            display: none;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm py-4 px-6 md:px-10 sticky top-0 z-50">
+        <nav class="container mx-auto flex justify-between items-center flex-wrap gap-4">
+            <!-- Logo and Tagline -->
+            <a href="index.html" class="flex items-center space-x-2">
+                <img src="https://placehold.co/40x40/3b82f6/ffffff?text=FC" alt="FreshConnect Logo" class="w-10 h-10 rounded-full">
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-gray-800">FreshConnect</span>
+                    <span class="text-xs text-gray-500 hidden sm:block">Trusted Raw Materials for Street Food Vendors</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="flex items-center space-x-4">
+                <button onclick="window.location.href='dashboard.html'" class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 font-medium">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                </button>
+                <button id="logoutBtn" class="px-4 py-2 rounded-lg btn-secondary font-medium">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Section - Manage Products -->
+    <main class="py-16 px-6 md:px-10 bg-gray-50 min-h-screen">
+        <div class="container mx-auto max-w-6xl">
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-8 text-gray-800 text-center">
+                Manage Your <span class="text-blue-600">Products</span>
+            </h1>
+
+            <div class="bg-white p-8 rounded-xl shadow-lg mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Your Product Listings</h2>
+                    <button id="addNewProductBtn" class="px-4 py-2 rounded-lg btn-primary text-sm">
+                        <i class="fas fa-plus mr-2"></i> Add New Product
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full product-table">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Unit</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Product rows will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <p id="noProductsMessage" class="text-center text-gray-600 mt-8 hidden">No products listed yet. Click "Add New Product" to get started!</p>
+
+            </div>
+
+            <button onclick="window.location.href='dashboard.html'" class="mt-12 px-6 py-3 rounded-full font-semibold btn-secondary">
+                Back to Dashboard
+            </button>
+        </div>
+    </main>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="productModalTitle" class="text-2xl font-bold text-gray-800">Add New Product</h2>
+                <button class="text-gray-500 hover:text-gray-700" onclick="hideProductModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="productForm" class="space-y-4">
+                <input type="hidden" id="productId"> <!-- Hidden field for product ID when editing -->
+                <div>
+                    <label for="productName" class="block text-gray-700 text-sm font-medium mb-1">Product Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="productName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Fresh Tomatoes" required>
+                </div>
+                <div>
+                    <label for="productCategory" class="block text-gray-700 text-sm font-medium mb-1">Category <span class="text-red-500">*</span></label>
+                    <select id="productCategory" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="">Select Category</option>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="spices">Spices</option>
+                        <option value="grains">Grains & Rice</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="oils">Cooking Oils</option>
+                        <option value="meat">Meat & Fish</option>
+                        <option value="snacks">Snack Items</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <div>
+                        <label for="productPrice" class="block text-gray-700 text-sm font-medium mb-1">Price <span class="text-red-500">*</span></label>
+                        <input type="number" id="productPrice" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 25.00" step="0.01" required>
+                    </div>
+                    <div>
+                        <label for="productUnit" class="block text-gray-700 text-sm font-medium mb-1">Unit <span class="text-red-500">*</span></label>
+                        <input type="text" id="productUnit" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., kg, L, piece" required>
+                    </div>
+                </div>
+                <div>
+                    <label for="productStock" class="block text-gray-700 text-sm font-medium mb-1">Current Stock <span class="text-red-500">*</span></label>
+                    <input type="number" id="productStock" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 100" required>
+                </div>
+                <div>
+                    <label for="productStatus" class="block text-gray-700 text-sm font-medium mb-1">Status <span class="text-red-500">*</span></label>
+                    <select id="productStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="draft">Draft</option>
+                    </select>
+                </div>
+                <p id="productFormError" class="text-red-600 text-sm hidden"></p>
+                <button type="submit" class="w-full py-3 rounded-lg btn-primary font-semibold">
+                    Save Product
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-10 px-6 md:px-10">
+        <div class="container mx-auto text-center text-gray-500 text-sm">
+            &copy; 2025 FreshConnect. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Retrieve user data from session storage
+        const userData = JSON.parse(sessionStorage.getItem('freshConnectUser'));
+        const productsTableBody = document.getElementById('productsTableBody');
+        const noProductsMessage = document.getElementById('noProductsMessage');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const addNewProductBtn = document.getElementById('addNewProductBtn');
+        const productModal = document.getElementById('productModal');
+        const productModalTitle = document.getElementById('productModalTitle');
+        const productForm = document.getElementById('productForm');
+        const productIdInput = document.getElementById('productId');
+        const productNameInput = document.getElementById('productName');
+        const productCategoryInput = document.getElementById('productCategory');
+        const productPriceInput = document.getElementById('productPrice');
+        const productUnitInput = document.getElementById('productUnit');
+        const productStockInput = document.getElementById('productStock');
+        const productStatusInput = document.getElementById('productStatus');
+        const productFormError = document.getElementById('productFormError');
+
+        // Simulated product data (replace with actual data from backend later)
+        let simulatedProducts = [
+            { id: 'PROD001', name: 'Basmati Rice', category: 'grains', price: 65.00, unit: 'kg', stock: 500, status: 'active' },
+            { id: 'PROD002', name: 'Sunflower Oil', category: 'oils', price: 120.00, unit: 'L', stock: 200, status: 'active' },
+            { id: 'PROD003', name: 'Turmeric Powder', category: 'spices', price: 200.00, unit: 'kg', stock: 150, status: 'active' },
+            { id: 'PROD004', name: 'Fresh Milk', category: 'dairy', price: 55.00, unit: 'L', stock: 300, status: 'inactive' },
+            { id: 'PROD005', name: 'Fresh Tomatoes', category: 'vegetables', price: 25.00, unit: 'kg', stock: 0, status: 'inactive' },
+        ];
+
+        // Function to show custom message box (copied from index.html)
+        function showMessage(message, type = 'info') {
+            const msgBox = document.getElementById('messageBox');
+            const msgText = document.getElementById('messageText');
+            msgText.textContent = message;
+            msgBox.className = `fixed bottom-4 right-4 p-3 rounded-lg shadow-lg ${type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-gray-800'} text-white`;
+            msgBox.style.display = 'block';
+            setTimeout(() => {
+                msgBox.style.display = 'none';
+            }, 5000);
+        }
+
+        // Generic modal show/hide functions (copied from index.html)
+        function showModal(modalElement) {
+            modalElement.style.display = 'flex';
+            modalElement.offsetHeight; // Trigger reflow
+            modalElement.classList.add('active');
+        }
+
+        function hideModal(modalElement, errorElement = null, formElement = null) {
+            modalElement.classList.remove('active');
+            setTimeout(() => {
+                modalElement.style.display = 'none';
+                if (errorElement) {
+                    errorElement.textContent = '';
+                    errorElement.classList.add('hidden');
+                }
+                if (formElement) {
+                    formElement.reset();
+                }
+            }, 300);
+        }
+
+        // Specific product modal functions
+        function showProductModal(product = null) {
+            productForm.reset(); // Clear form first
+            productFormError.classList.add('hidden'); // Hide any previous errors
+
+            if (product) {
+                productModalTitle.textContent = 'Edit Product';
+                productIdInput.value = product.id;
+                productNameInput.value = product.name;
+                productCategoryInput.value = product.category;
+                productPriceInput.value = product.price;
+                productUnitInput.value = product.unit;
+                productStockInput.value = product.stock;
+                productStatusInput.value = product.status;
+            } else {
+                productModalTitle.textContent = 'Add New Product';
+                productIdInput.value = ''; // Clear ID for new product
+            }
+            showModal(productModal);
+        }
+
+        function hideProductModal() {
+            hideModal(productModal, productFormError, productForm);
+        }
+
+        // Function to populate the products table
+        function populateProductsTable() {
+            productsTableBody.innerHTML = ''; // Clear existing rows
+            if (simulatedProducts.length === 0) {
+                noProductsMessage.classList.remove('hidden');
+                return;
+            }
+
+            noProductsMessage.classList.add('hidden'); // Hide if there are products
+
+            simulatedProducts.forEach(product => {
+                const row = productsTableBody.insertRow();
+                row.insertCell().textContent = product.name;
+                row.insertCell().textContent = product.category.charAt(0).toUpperCase() + product.category.slice(1); // Capitalize category
+                row.insertCell().textContent = `₹${product.price.toFixed(2)}`;
+                row.insertCell().textContent = product.unit;
+                row.insertCell().textContent = product.stock;
+
+                const statusCell = row.insertCell();
+                let statusClass = '';
+                switch (product.status) {
+                    case 'active': statusClass = 'status-active'; break;
+                    case 'inactive': statusClass = 'status-inactive'; break;
+                    case 'draft': statusClass = 'status-draft'; break;
+                }
+                statusCell.innerHTML = `<span class="status-badge ${statusClass}">${product.status.charAt(0).toUpperCase() + product.status.slice(1)}</span>`;
+
+                const actionCell = row.insertCell();
+                const editBtn = document.createElement('button');
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                editBtn.className = 'text-blue-600 hover:text-blue-800 mr-3';
+                editBtn.title = 'Edit Product';
+                editBtn.onclick = () => showProductModal(product);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                deleteBtn.className = 'text-red-600 hover:text-red-800';
+                deleteBtn.title = 'Delete Product';
+                deleteBtn.onclick = () => deleteProduct(product.id);
+
+                actionCell.appendChild(editBtn);
+                actionCell.appendChild(deleteBtn);
+            });
+        }
+
+        // Handle product form submission (Add/Edit)
+        productForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            productFormError.classList.add('hidden');
+
+            const id = productIdInput.value;
+            const name = productNameInput.value;
+            const category = productCategoryInput.value;
+            const price = parseFloat(productPriceInput.value);
+            const unit = productUnitInput.value;
+            const stock = parseInt(productStockInput.value);
+            const status = productStatusInput.value;
+
+            if (!name || !category || isNaN(price) || !unit || isNaN(stock) || !status) {
+                productFormError.textContent = 'Please fill in all required fields correctly.';
+                productFormError.classList.remove('hidden');
+                return;
+            }
+
+            if (id) {
+                // Edit existing product
+                const index = simulatedProducts.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    simulatedProducts[index] = { ...simulatedProducts[index], name, category, price, unit, stock, status };
+                    showMessage('Product updated successfully!', 'success');
+                }
+            } else {
+                // Add new product
+                const newId = 'PROD' + String(simulatedProducts.length + 1).padStart(3, '0');
+                simulatedProducts.push({ id: newId, name, category, price, unit, stock, status });
+                showMessage('Product added successfully!', 'success');
+            }
+
+            populateProductsTable();
+            hideProductModal();
+        });
+
+        // Handle delete product
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                simulatedProducts = simulatedProducts.filter(p => p.id !== id);
+                populateProductsTable();
+                showMessage('Product deleted successfully!', 'success');
+            }
+        }
+
+        // Basic logout function
+        function logout() {
+            sessionStorage.removeItem('freshConnectUser'); // Clear session
+            window.location.href = 'index.html'; // Redirect to main page
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if user is logged in and is a supplier
+            if (!userData || !userData.isLoggedIn || userData.role !== 'supplier') {
+                alert('Access Denied. Please log in as a supplier to manage products.');
+                window.location.href = 'index.html'; // Redirect if not authorized
+                return;
+            }
+
+            populateProductsTable(); // Populate the table on page load
+
+            logoutBtn.addEventListener('click', logout);
+            addNewProductBtn.addEventListener('click', () => showProductModal());
+        });
+    </script>
+</body>
+</html>
